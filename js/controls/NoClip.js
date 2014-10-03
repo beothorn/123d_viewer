@@ -14,12 +14,16 @@ THREE.PointerLockControls = function ( camera ) {
 	var moveRight = false;
     var moveUp = false;
     var moveDown = false;
+    
+    var rollClockwise = false;
+    var rollCounterClockwise = false;
 
 	var prevTime = performance.now();
 
 	var velocity = new THREE.Vector3();
     var xAxix = new THREE.Vector3(1,0,0);
     var yAxix = new THREE.Vector3(0,1,0);
+    var zAxix = new THREE.Vector3(0,0,1);
 
 	var PI_2 = Math.PI / 2;
 
@@ -65,6 +69,14 @@ THREE.PointerLockControls = function ( camera ) {
             case 16: // shift
 				moveDown = true;
 				break;
+                
+            case 81: // q
+				rollCounterClockwise = true;
+				break;
+                
+            case 69: // e
+				rollClockwise = true;
+				break;
 
 		}
 
@@ -102,6 +114,14 @@ THREE.PointerLockControls = function ( camera ) {
             case 16: // shift
 				moveDown = false;
 				break;
+                
+            case 81: // q
+				rollCounterClockwise = false;
+				break;
+                
+            case 69: // e
+				rollClockwise = false;
+				break;
 
 		}
 
@@ -128,6 +148,9 @@ THREE.PointerLockControls = function ( camera ) {
 
 		if ( moveLeft ) velocity.x -= 400.0 * delta;
 		if ( moveRight ) velocity.x += 400.0 * delta;
+        
+        if ( rollCounterClockwise ) camera.rotateOnAxis(zAxix, delta*1.5);
+        if ( rollClockwise ) camera.rotateOnAxis(zAxix, delta*-1.5);
         
 		camera.translateX( velocity.x * delta );
 		camera.translateY( velocity.y * delta ); 
