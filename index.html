@@ -70,9 +70,7 @@
 			</div>
             
             <div id="instructions" class="centered">
-                <span style="font-size:40px">Click to play</span>
-                <br />
-                (W, A, S, D = Move, MOUSE = Look around)
+                <span style="font-size:40px">Click to Start</span>
             </div>
 		</div>
         
@@ -80,10 +78,9 @@
 
             if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
             
-			var container, stats;
+			var container;
 
 			var camera, controls, scene, renderer;
-            var clock = new THREE.Clock();
 
 			var mouseX = 0, mouseY = 0;
 
@@ -182,6 +179,10 @@
             
 			init();
 			animate();
+            
+            function afterLoad(){
+                document.getElementById('loading').style.display = 'none';
+            }
 
 
 			function init() {
@@ -190,7 +191,6 @@
 				document.body.appendChild( container );
 
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-				camera.position.z = 100;
 
 				// scene
 
@@ -212,30 +212,24 @@
                 });
 
 				var loader = new THREE.OBJMTLLoader();
-				loader.load( 'obj/mesh.obj', 'obj/mesh.mtl', function ( object ) {
-
-					object.position.y = - 80;
-                    
+				loader.load( 'obj/mesh.obj', 'obj/mesh.mtl', function ( object ) {                    
 					scene.add( object );
-                    
-                    document.getElementById('loading').style.display = 'none';
+                    afterLoad();
+				});
 
-				} );
-
-                //camera
+                //control
                 controls = new THREE.PointerLockControls( camera );
 
 				scene.add( controls.getObject() );
                 
-				//
+				//renderer
 
 				renderer = new THREE.WebGLRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
 
+                //DOM wiring stuff
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
-				//
 
 				window.addEventListener( 'resize', onWindowResize, false );
 
@@ -260,21 +254,14 @@
 
 			}
 
-			//
-
 			function animate() {
-
 				requestAnimationFrame( animate );
 				render();
-
 			}
 
 			function render() {
-
-                
                 controls.update( );
                 renderer.render( scene, camera );
-
 			}
 
 		</script>
