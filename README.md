@@ -9,5 +9,5 @@ To use your model just change the files inside the obj folder.
 http://www.123dapp.com/catch  
 http://en.wikipedia.org/wiki/Photogrammetry  
 
-ThreeJs is an library is a JavaScript 3D Library for using WebGL:  
+ThreeJs is a JavaScript library that eases the use of WebGL:  
 http://threejs.org/  
