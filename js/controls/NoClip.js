@@ -8,13 +8,6 @@ THREE.PointerLockControls = function ( camera ) {
 
 	camera.rotation.set( 0, 0, 0 );
 
-	var pitchObject = new THREE.Object3D();
-	pitchObject.add( camera );
-
-	var yawObject = new THREE.Object3D();
-	yawObject.position.y = 10;
-	yawObject.add( pitchObject );
-
 	var moveForward = false;
 	var moveBackward = false;
 	var moveLeft = false;
@@ -25,6 +18,8 @@ THREE.PointerLockControls = function ( camera ) {
 	var prevTime = performance.now();
 
 	var velocity = new THREE.Vector3();
+    var xAxix = new THREE.Vector3(1,0,0);
+    var yAxix = new THREE.Vector3(0,1,0);
 
 	var PI_2 = Math.PI / 2;
 
@@ -35,8 +30,8 @@ THREE.PointerLockControls = function ( camera ) {
 		var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 		var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
-		yawObject.rotation.y -= movementX * 0.002;
-		pitchObject.rotation.x -= movementY * 0.002;
+        camera.rotateOnAxis(yAxix, movementX*-0.001);
+        camera.rotateOnAxis(xAxix, movementY*-0.001);
 
 	}, false );
     
@@ -115,10 +110,6 @@ THREE.PointerLockControls = function ( camera ) {
 
 	this.enabled = false;
 
-	this.getObject = function () {
-		return yawObject;
-	};
-
 	this.update = function () {
 
 		if ( scope.enabled === false ) return;
@@ -130,7 +121,6 @@ THREE.PointerLockControls = function ( camera ) {
 		velocity.z -= velocity.z * 10.0 * delta;
         velocity.y -= velocity.y * 10.0 * delta;
 
-
 		if ( moveForward ) velocity.z -= 400.0 * delta;
 		if ( moveBackward ) velocity.z += 400.0 * delta;
         if ( moveUp ) velocity.y += 400.0 * delta;
@@ -138,21 +128,12 @@ THREE.PointerLockControls = function ( camera ) {
 
 		if ( moveLeft ) velocity.x -= 400.0 * delta;
 		if ( moveRight ) velocity.x += 400.0 * delta;
-
-        var direction = new THREE.Vector3( velocity.x, velocity.y, velocity.z);
-		var rotation = new THREE.Euler( 0, 0, 0, "YXZ" );
-        rotation.set( pitchObject.rotation.x, yawObject.rotation.y, 0 );
-		direction.applyEuler( rotation );
         
-        var translation = new THREE.Vector3( direction.x, direction.y, direction.z);
-        translation.multiplyScalar(delta);
-        
-		yawObject.translateX( translation.x );
-		yawObject.translateY( translation.y ); 
-		yawObject.translateZ( translation.z );
+		camera.translateX( velocity.x * delta );
+		camera.translateY( velocity.y * delta ); 
+		camera.translateZ( velocity.z * delta );
 
 		prevTime = time;
-
 	};
 
 };
